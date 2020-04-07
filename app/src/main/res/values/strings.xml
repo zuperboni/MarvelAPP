@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Marvel API</string>
+    <string name="detalhes">detalhes</string>
+    <string name="comprar">Comprar</string>
+    <string name="personagens_fragment_title">Personagens</string>
+    <string name="quadrinhos_fragment_title">Quadrinhos</string>
+    <string name="search">Buscar</string>
+</resources>
