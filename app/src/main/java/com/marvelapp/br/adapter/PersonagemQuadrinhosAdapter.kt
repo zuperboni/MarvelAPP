@@ -70,12 +70,9 @@ class PersonagemQuadrinhosAdapter(
                 openURL(item.urls[0].url)
             }
         }
-
     }
 
     override fun getFilter(): Filter {
-
-
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 if(constraint.toString().isNotEmpty()) {

@@ -13,7 +13,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuItemCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.marvelapp.br.R
 import com.marvelapp.br.adapter.PersonagemQuadrinhosAdapter
@@ -25,6 +24,7 @@ class PersonagemQuadrinhosFragment : Fragment() {
 
     private val viewModel: PersonagemViewModel by viewModel()
     private lateinit var adapter: PersonagemQuadrinhosAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,11 +38,11 @@ class PersonagemQuadrinhosFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
        recycler_comics.layoutManager = LinearLayoutManager(requireContext())
 
-        viewModel.getPersonagemDetalhe(this.arguments?.getInt("id")!!)
-        viewModel.personagemDetalheLiveData.observe(requireActivity(), Observer {
-            adapter = PersonagemQuadrinhosAdapter(it.data.results,::openURL)
+       viewModel.getComics(this.arguments?.getInt("id")!!)
+        viewModel.personagemDetalheLiveData.observeForever {
+            adapter = PersonagemQuadrinhosAdapter(it.data.results, ::openURL)
             recycler_comics.adapter = adapter
-        })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

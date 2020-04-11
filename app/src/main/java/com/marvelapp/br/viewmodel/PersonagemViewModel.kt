@@ -9,23 +9,22 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.marvelapp.br.sdk.API
 import com.marvelapp.br.sdk.paging.PersonagemDataSource
+import com.marvelapp.br.sdk.repository.PersonagemRepository
 import com.marvelapp.br.sdk.response.Result
-import com.marvelapp.br.sdk.response.comic.PersonagemDetalheResponse
+import com.marvelapp.br.sdk.response.comic.ComicDetalheResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class PersonagemViewModel(private val api: API) : ViewModel() {
+class PersonagemViewModel(private val api: API, private val repo: PersonagemRepository) :  ViewModel() {
 
-    //region Coroutines
-    private val viewModelJob = SupervisorJob()
-    private val scope = CoroutineScope(Dispatchers.Default + viewModelJob)
-    //end region
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.IO + job)
 
-    private var _personagemDetalhe: MutableLiveData<PersonagemDetalheResponse> = MutableLiveData()
+    private var _personagemComicDetalhe: MutableLiveData<ComicDetalheResponse> = MutableLiveData()
     var personagensLiveData: LiveData<PagedList<Result>>
-    val personagemDetalheLiveData: LiveData<PersonagemDetalheResponse> = _personagemDetalhe
+    val personagemDetalheLiveData: LiveData<ComicDetalheResponse> = _personagemComicDetalhe
 
     init {
         val config = PagedList.Config.Builder()
@@ -39,27 +38,15 @@ class PersonagemViewModel(private val api: API) : ViewModel() {
 
     fun getPersonagens(): LiveData<PagedList<Result>> = personagensLiveData
 
-    fun getPersonagemDetalhe(id: Int) {
+    fun getComics(id: Int) {
         scope.launch {
             try {
-                val response = api.getPersonagem(id).await()
-                when {
-                    response.isSuccessful -> {
-                        _personagemDetalhe.postValue(response.body())
-                    }
-                    else -> {
-                        Log.e("PersonagemDataSource", "Deu ruinzao")
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("PersonagemDataSource", "Deu ruinzao")
+                val repos = repo.getComic(id).await()
+                _personagemComicDetalhe.postValue(repos.body())
+            } catch (t: Throwable) {
+                Log.d("PersonagemViewModel", "cagou foi tudo")
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
     }
 
     private fun initPagedListBuilder(config: PagedList.Config) : LivePagedListBuilder<Int, Result> {
@@ -69,6 +56,11 @@ class PersonagemViewModel(private val api: API) : ViewModel() {
             }
         }
         return LivePagedListBuilder<Int, Result>(dataSourceFactory,config)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        job.cancel()
     }
 }
 

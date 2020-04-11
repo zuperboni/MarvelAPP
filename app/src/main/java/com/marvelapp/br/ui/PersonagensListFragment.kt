@@ -39,9 +39,7 @@ class PersonagensListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         shimmer = view.findViewById(R.id.placeholder)
         navControler = Navigation.findNavController(requireActivity(),R.id.nav_host)
-
         recycler_personagens.layoutManager = LinearLayoutManager(requireContext())
-
         getObservers()
     }
 
@@ -53,12 +51,8 @@ class PersonagensListFragment : Fragment() {
     private fun getObservers() {
         viewModel.getPersonagens().observe(viewLifecycleOwner, Observer {
             personageAdapter.submitList(it)
-            initList()
+            recycler_personagens.adapter = personageAdapter
         })
-    }
-
-    private fun initList() {
-        recycler_personagens.adapter = personageAdapter
     }
 
     fun navigateToDetail(id: Int) {
