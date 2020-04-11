@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.marvelapp.br.config.initPagingConfig
 import com.marvelapp.br.sdk.API
 import com.marvelapp.br.sdk.paging.PersonagemDataSource
 import com.marvelapp.br.sdk.repository.PersonagemRepository
@@ -27,13 +28,7 @@ class PersonagemViewModel(private val api: API, private val repo: PersonagemRepo
     val personagemDetalheLiveData: LiveData<ComicDetalheResponse> = _personagemComicDetalhe
 
     init {
-        val config = PagedList.Config.Builder()
-            .setPageSize(10)
-            .setEnablePlaceholders(true)
-            .setPrefetchDistance(2)
-            .build()
-
-        personagensLiveData = initPagedListBuilder(config).build()
+        personagensLiveData = initPagedListBuilder(initPagingConfig()).build()
     }
 
     fun getPersonagens(): LiveData<PagedList<Result>> = personagensLiveData
