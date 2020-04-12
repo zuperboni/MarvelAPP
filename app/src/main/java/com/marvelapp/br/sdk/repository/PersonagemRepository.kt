@@ -11,7 +11,7 @@ import retrofit2.Response
 class PersonagemRepository(private val api: API) {
 
     suspend fun
-            getComic (id: Int): Deferred<Response<ComicDetalheResponse>> {
+            getComic (id: Int): Deferred<ComicDetalheResponse> {
        return withContext(IO) {
             async { api.getPersonagem(id).await() }
         }

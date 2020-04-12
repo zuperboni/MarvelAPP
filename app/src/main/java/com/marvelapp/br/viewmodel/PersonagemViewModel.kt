@@ -37,7 +37,7 @@ class PersonagemViewModel(private val api: API, private val repo: PersonagemRepo
         scope.launch {
             try {
                 val repos = repo.getComic(id).await()
-                _personagemComicDetalhe.postValue(repos.body())
+                _personagemComicDetalhe.postValue(repos)
             } catch (t: Throwable) {
                 Log.d("PersonagemViewModel", "cagou foi tudo")
             }
